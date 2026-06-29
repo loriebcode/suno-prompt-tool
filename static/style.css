@@ -1,0 +1,393 @@
+/* ===========================================================
+   Prompt Booth — Suno Prompt Builder & Validator
+   Design concept: a recording studio vocal booth. Charcoal +
+   warm amber "on-air" light + a VU-meter-style character count.
+   =========================================================== */
+
+:root {
+    --charcoal: #16151A;
+    --charcoal-soft: #1F1E26;
+    --panel: #232229;
+    --amber: #E8A33D;
+    --amber-bright: #F5BD5C;
+    --green: #6FBE8C;
+    --red: #E2664D;
+    --text-soft: rgba(245, 243, 240, 0.65);
+    --text: #F5F3F0;
+    --line: rgba(245, 243, 240, 0.1);
+
+    --font-display: 'Bricolage Grotesque', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--charcoal);
+    color: var(--text);
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+}
+
+.booth-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 3rem 1.5rem 2.5rem;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.on-air-light {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 16px 4px rgba(232, 163, 61, 0.6);
+    flex-shrink: 0;
+    margin-top: 0.4rem;
+    animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+.eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.7rem;
+    color: var(--amber);
+    margin: 0 0 0.6rem;
+}
+
+.booth-header h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.subhead {
+    color: var(--text-soft);
+    margin: 0;
+    font-size: 0.98rem;
+    font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.booth-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem;
+}
+
+.mode-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: var(--charcoal-soft);
+    color: var(--text-soft);
+    border: 1px solid var(--line);
+    padding: 0.65rem 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.tab-btn.active {
+    background: var(--amber);
+    color: var(--charcoal);
+    border-color: var(--amber);
+    font-weight: 700;
+}
+
+.tab-btn:not(.active):hover {
+    border-color: var(--amber);
+    color: var(--text);
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.panel.hidden {
+    display: none;
+}
+
+.field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.field-wide {
+    grid-column: 1 / -1;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-soft);
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    background: var(--charcoal);
+    border: 1.5px solid var(--line);
+    border-radius: 5px;
+    color: var(--text);
+    padding: 0.75rem 0.9rem;
+    width: 100%;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(245, 243, 240, 0.3);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.2);
+}
+
+textarea {
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.primary-btn {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    background: var(--amber);
+    color: var(--charcoal);
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s ease;
+}
+
+.primary-btn:hover {
+    background: var(--amber-bright);
+}
+
+.primary-btn:focus-visible {
+    outline: 3px solid var(--text);
+    outline-offset: 2px;
+}
+
+.result-block {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.meter-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.meter-track {
+    flex: 1;
+    height: 10px;
+    background: var(--charcoal);
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+}
+
+.meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--amber));
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.meter-fill.meter-over {
+    background: var(--red);
+}
+
+.meter-label {
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    white-space: nowrap;
+}
+
+.meter-label.over {
+    color: var(--red);
+    font-weight: 700;
+}
+
+.prompt-output {
+    background: var(--charcoal);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.output-label {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+    margin: 0 0 0.6rem;
+}
+
+.output-text {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.verdict {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+}
+
+.verdict-pass {
+    background: rgba(111, 190, 140, 0.12);
+    color: var(--green);
+}
+
+.verdict-fail {
+    background: rgba(226, 102, 77, 0.12);
+    color: var(--red);
+}
+
+.verdict-light {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.verdict-light-pass {
+    background: var(--green);
+    box-shadow: 0 0 10px 2px rgba(111, 190, 140, 0.6);
+}
+
+.verdict-light-fail {
+    background: var(--red);
+    box-shadow: 0 0 10px 2px rgba(226, 102, 77, 0.6);
+}
+
+.issue-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.issue {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding-left: 0;
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+}
+
+.issue-tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.issue-error .issue-tag {
+    background: rgba(226, 102, 77, 0.18);
+    color: var(--red);
+}
+
+.issue-warning .issue-tag {
+    background: rgba(232, 163, 61, 0.18);
+    color: var(--amber);
+}
+
+.no-issues {
+    color: var(--green);
+    font-size: 0.92rem;
+    margin: 0;
+}
+
+.page-footer {
+    text-align: center;
+    padding: 2rem 1.5rem 3rem;
+    color: rgba(245, 243, 240, 0.35);
+    font-size: 0.78rem;
+}
+
+.page-footer p {
+    margin: 0;
+    max-width: 540px;
+    margin-inline: auto;
+    line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+    .field-grid {
+        grid-template-columns: 1fr;
+    }
+    .panel, .result-block {
+        padding: 1.5rem;
+    }
+    .booth-header {
+        padding: 2.5rem 1.25rem 2rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+  }
