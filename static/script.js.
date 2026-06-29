@@ -1,0 +1,34 @@
+// script.js
+// Handles switching between the "Build" and "Validate" tabs.
+// Pure vanilla JS, no dependencies.
+
+const tabButtons = document.querySelectorAll(".tab-btn");
+const buildPanel = document.getElementById("build-panel");
+const validatePanel = document.getElementById("validate-panel");
+
+tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        tabButtons.forEach((b) => b.classList.remove("active"));
+        button.classList.add("active");
+
+        const mode = button.getAttribute("data-mode");
+        if (mode === "build") {
+            buildPanel.classList.remove("hidden");
+            validatePanel.classList.add("hidden");
+        } else {
+            validatePanel.classList.remove("hidden");
+            buildPanel.classList.add("hidden");
+        }
+    });
+});
+
+// If the page just loaded with validation results from the "validate"
+// form, make sure the Validate tab is shown as active (in case the user
+// submitted that form last).
+const validateTextarea = document.getElementById("prompt_text_input");
+if (validateTextarea && validateTextarea.value.trim() !== "") {
+    tabButtons.forEach((b) => b.classList.remove("active"));
+    document.querySelector('[data-mode="validate"]').classList.add("active");
+    buildPanel.classList.add("hidden");
+    validatePanel.classList.remove("hidden");
+}
